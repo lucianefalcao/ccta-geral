@@ -1,5 +1,6 @@
 {
   "name": "Portal do Centro de Comunicação, Turismo e Artes",
+  "short_name": "Portal CCTA",
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#FF5252",
@@ -27,8 +28,11 @@
     },
     {
       "src": "icons/icon-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "icons/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png",
       "purpose": "maskable"
     }
   ]
