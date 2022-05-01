@@ -1,30 +1,22 @@
 <script setup lang="ts">
 import CardNoticia from './CardNoticia.vue';
+import { onMounted, ref } from '@vue/runtime-core';
+import Noticia from '../../models/domain/Noticia';
+import { useNoticiaStore } from '../../stores/noticia';
 
-const noticias = [
-  { 
-    titulo: 'Título 1',
-    texto: "<p>Oh yeah. It's the best part. It's crunchy, it's explosive, it's where the muffin breaks free of the pan and sort of does it's own thing. I'll tell you. That's a million dollor idea right there. Just sell the tops.</p>",
-    data: '21/04/2022',
-    imgSrc: 'https://via.placeholder.com/600x300',
-    rota: '#'
-  },
-  { 
-    titulo: 'Título 2',
-    texto: "<p>Oh yeah. It's the best part. It's crunchy, it's explosive, it's where the muffin breaks free of the pan and sort of does it's own thing. I'll tell you. That's a million dollor idea right there. Just sell the tops.</p>",
-    data: '21/04/2022',
-    imgSrc: 'https://via.placeholder.com/600x300',
-    rota: '#'
-  },
-  { 
-    titulo: 'Título 3',
-    texto: "<p>Oh yeah. It's the best part. It's crunchy, it's explosive, it's where the muffin breaks free of the pan and sort of does it's own thing. I'll tell you. That's a million dollor idea right there. Just sell the tops.</p>",
-    data: '21/04/2022',
-    imgSrc: 'https://via.placeholder.com/600x300',
-    rota: '#'
-  },
-]
+type NoticiaExibicao = Noticia & { rota: string };
 
+const noticiaStore = useNoticiaStore();
+
+const noticias = ref<NoticiaExibicao[]>([]);
+
+onMounted(async () => {
+  const dadosNoticias = await noticiaStore.getNoticias(3);
+
+  dadosNoticias.forEach((noticia) => {
+    noticias.value.push({ ...noticia, rota: '#' });
+  });
+});
 </script>
 
 <template>
