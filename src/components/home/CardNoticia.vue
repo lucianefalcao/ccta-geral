@@ -1,37 +1,46 @@
 <script setup lang="ts">
+import Noticia from 'src/models/domain/Noticia';
+import { useRouter } from 'vue-router';
 import { lineClamp } from '../../utils';
 
-defineProps<{
-  imgSrc: string;
-  titulo: string;
-  data: string;
-  texto: string;
-  rota: string;
+const props = defineProps<{
+  noticia: Noticia;
 }>();
+
+const Router = useRouter();
+
+const goTo = () => {
+  Router.push({
+    path: `/noticias/${props.noticia.uid}`,
+    params: {
+      test: 'oi',
+    },
+  });
+};
 </script>
 
 <template>
   <q-card tag="div" href="#" class="text-white col-md-3">
     <q-img
-      :src="imgSrc"
+      :src="noticia.imgSrc"
       alt="Imagem"
       class="q-pa-none"
       fit="cover"
       :ratio="16 / 9"
     />
     <q-card-section class="bg-primary">
-      <div class="text-weight-bold">{{ titulo }}</div>
+      <div class="text-weight-bold">{{ noticia.titulo }}</div>
       <div class="text-body textSubtitle text-white">
-        Publicado em {{ data }}
+        Publicado em {{ noticia.data }}
       </div>
     </q-card-section>
 
     <q-card-section class="q-pt-none bg-primary">
-      <div v-html="lineClamp(texto)"></div>
+      <div v-html="lineClamp(noticia.texto)"></div>
     </q-card-section>
 
     <q-card-actions align="right" class="bg-primary q-pt-none">
-      <q-btn flat :to="rota">Detalhes</q-btn>
+      <q-btn flat @click="goTo">Detalhes</q-btn>
     </q-card-actions>
   </q-card>
 </template>

@@ -3,9 +3,6 @@ import ListaSitesExternos from 'src/components/home/ListaSitesExternos.vue';
 import ListaMenuItens from 'src/components/home/ListaMenuItens.vue';
 import ListaNoticias from 'src/components/home/ListaNoticias.vue';
 import ListaEventos from 'src/components/home/ListaEventos.vue';
-import { onMounted } from '@vue/runtime-core';
-
-onMounted(() => console.log(process.env));
 </script>
 
 <template>

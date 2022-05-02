@@ -5,11 +5,9 @@ import { onMounted, ref } from '@vue/runtime-core';
 import Noticia from '../../models/domain/Noticia';
 import { useNoticiaStore } from '../../stores/noticia';
 
-type NoticiaExibicao = Noticia & { rota: string };
-
 const noticiaStore = useNoticiaStore();
 
-const noticias = ref<NoticiaExibicao[]>([]);
+const noticias = ref<Noticia[]>([]);
 const carregando = ref<boolean>(false);
 const mensagemErro = ref<string>('');
 
@@ -17,11 +15,7 @@ onMounted(async () => {
   try {
     mensagemErro.value = '';
     carregando.value = true;
-
-    const dadosNoticias = await noticiaStore.getNoticias(3);
-    dadosNoticias.forEach((noticia) => {
-      noticias.value.push({ ...noticia, rota: '#' });
-    });
+    noticias.value = await noticiaStore.getNoticias(3);
   } catch (e: any) {
     mensagemErro.value =
       'Ocorreu um erro ao buscar as notícias, por favor atualize a página.';
@@ -44,11 +38,7 @@ onMounted(async () => {
   <CardNoticia
     v-else
     v-for="noticia in noticias"
-    :key="noticia.titulo"
-    :titulo="noticia.titulo"
-    :texto="noticia.texto"
-    :img-src="noticia.imgSrc"
-    :data="noticia.data"
-    :rota="noticia.rota"
+    :key="noticia.uid"
+    :noticia="noticia"
   />
 </template>

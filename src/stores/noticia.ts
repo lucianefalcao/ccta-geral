@@ -24,6 +24,7 @@ export const useNoticiaStore = defineStore('noticia', () => {
 
       const readableDate = lastModified(doc.data().lastModified);
       noticias.push({
+        uid: doc.id,
         titulo: doc.data().title,
         texto: doc.data().newsText,
         data: readableDate,
