@@ -2,6 +2,9 @@
 import Noticia from 'src/models/domain/Noticia';
 import { useRouter } from 'vue-router';
 import { lineClamp } from '../../utils';
+import { useNoticiaStore } from '../../stores/noticia';
+
+const noticiaStore = useNoticiaStore();
 
 const props = defineProps<{
   noticia: Noticia;
@@ -10,11 +13,9 @@ const props = defineProps<{
 const Router = useRouter();
 
 const goTo = () => {
+  noticiaStore.noticiaSelecionada = props.noticia;
   Router.push({
     path: `/noticias/${props.noticia.uid}`,
-    params: {
-      test: 'oi',
-    },
   });
 };
 </script>
