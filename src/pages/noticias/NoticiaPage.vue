@@ -1,22 +1,44 @@
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useNoticiaStore } from '../../stores/noticia';
 
 const noticiaStore = useNoticiaStore();
 const Route = useRoute();
+const $q = useQuasar();
 
 const noticia = ref(noticiaStore.noticiaSelecionada);
+const carregando = ref<boolean>(false);
 
 onMounted(() => {
-  const uid = Route.params.uid as string;
-  noticiaStore.getNoticia(uid);
+  try {
+    carregando.value = true;
+    const uid = Route.params.uid as string;
+    noticiaStore.getNoticia(uid);
+  } catch (e: any) {
+    $q.notify({
+      color: 'negative',
+      message:
+        'Ocorreu um problema ao buscar a notícia. Por favor, atualize a página.',
+      icon: 'o_report_problem',
+      timeout: 5000,
+      position: 'top',
+    });
+  } finally {
+    carregando.value = false;
+  }
 });
 </script>
 
 <template>
   <div class="row flex-center">
-    <q-card class="q-pa-md q-pa-md-xl q-ma-md-xl" style="max-width: 950px">
+    <q-spinner-hourglass v-if="carregando" color="primary" size="2em" />
+    <q-card
+      v-else
+      class="q-pa-md q-pa-md-xl q-ma-md-xl"
+      style="max-width: 950px"
+    >
       <q-card-section class="row flex-center">
         <q-img
           :src="noticia.imgSrc"
