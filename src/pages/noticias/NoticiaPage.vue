@@ -41,6 +41,7 @@ onMounted(() => {
     >
       <q-card-section class="row flex-center">
         <q-img
+          v-if="noticia.imgSrc"
           :src="noticia.imgSrc"
           fit="contain"
           style="max-height: 300px; max-width: 600px"
@@ -49,7 +50,8 @@ onMounted(() => {
       </q-card-section>
 
       <q-card-section>
-        <p class="text-h4">{{ noticia?.titulo }}</p>
+        <p class="text-h6 lt-md">{{ noticia?.titulo }}</p>
+        <p class="text-h4 gt-sm">{{ noticia?.titulo }}</p>
         <p class="text-body2">
           Escrito por Fulano &bull; última atualização em {{ noticia.data }}
         </p>

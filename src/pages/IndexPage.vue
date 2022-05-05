@@ -54,7 +54,7 @@ import ListaEventos from 'src/components/home/ListaEventos.vue';
           <p class="text-h6 textSection q-mb-none text-weight-bold">Notícias</p>
           <p class="text-subtitle-1 textSubtitle">Confira as notícias</p>
         </div>
-        <a href="#" class="text-blue-6">Ver mais</a>
+        <a href="/noticias" class="text-blue-6">Ver mais</a>
       </span>
 
       <div class="row flex-center q-gutter-md q-mt-sm q-pt-md-lg">

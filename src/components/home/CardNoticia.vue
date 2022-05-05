@@ -23,6 +23,7 @@ const goTo = () => {
 <template>
   <q-card tag="div" href="#" class="text-white col-md-3">
     <q-img
+      v-if="noticia.imgSrc"
       :src="noticia.imgSrc"
       alt="Imagem"
       class="q-pa-none"

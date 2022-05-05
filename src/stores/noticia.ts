@@ -5,6 +5,7 @@ import {
   limit,
   orderBy,
   query,
+  startAfter,
   where,
 } from 'firebase/firestore';
 import { ref as refStorage, getDownloadURL } from 'firebase/storage';
@@ -24,6 +25,8 @@ export const useNoticiaStore = defineStore('noticia', () => {
     data: '',
   });
 
+  const ultimaConsulta = ref();
+
   async function getNoticias(total: number): Promise<Noticia[]> {
     const querySnapshot = await getDocs(
       query(
@@ -36,9 +39,10 @@ export const useNoticiaStore = defineStore('noticia', () => {
     const noticias: Noticia[] = [];
 
     for (const doc of querySnapshot.docs) {
-      const url = await getDownloadURL(
-        refStorage(storage, doc.data().coverPath)
-      );
+      let url = '';
+      if (doc.data().coverPath) {
+        url = await getDownloadURL(refStorage(storage, doc.data().coverPath));
+      }
 
       const readableDate = lastModified(doc.data().lastModified);
       noticias.push({
@@ -59,9 +63,12 @@ export const useNoticiaStore = defineStore('noticia', () => {
       const docSnapshot = await getDoc(doc(db, 'news', uid));
 
       if (docSnapshot.exists()) {
-        const url = await getDownloadURL(
-          refStorage(storage, docSnapshot.data().coverPath)
-        );
+        let url = '';
+        if (docSnapshot.data().coverPath) {
+          url = await getDownloadURL(
+            refStorage(storage, docSnapshot.data().coverPath)
+          );
+        }
 
         const readableDate = lastModified(docSnapshot.data().lastModified);
         noticiaSelecionada.value.uid = docSnapshot.id;
@@ -74,9 +81,51 @@ export const useNoticiaStore = defineStore('noticia', () => {
     }
   }
 
+  async function getNoticiaPagination() {
+    const first = query(
+      noticiaColecao,
+      where('state', '==', 'published'),
+      orderBy('lastModified', 'desc'),
+      limit(20)
+    );
+
+    const docSnap = await getDocs(first);
+
+    ultimaConsulta.value = docSnap.docs[docSnap.docs.length - 1];
+    console.log('last', ultimaConsulta.value);
+
+    const next = query(
+      noticiaColecao,
+      where('state', '==', 'published'),
+      orderBy('lastModified', 'desc'),
+      startAfter(ultimaConsulta.value),
+      limit(20)
+    );
+
+    const noticias: Noticia[] = [];
+    for (const doc of docSnap.docs) {
+      let url = '';
+      if (doc.data().coverPath) {
+        url = await getDownloadURL(refStorage(storage, doc.data().coverPath));
+      }
+
+      const readableDate = lastModified(doc.data().lastModified);
+      noticias.push({
+        uid: doc.id,
+        titulo: doc.data().title,
+        texto: doc.data().newsText,
+        data: readableDate,
+        estado: doc.data().state,
+        imgSrc: url,
+      });
+    }
+
+    return noticias;
+  }
+
   const lastModified = (data: number): string => {
     return new Date(data).toLocaleDateString('pt-BR');
   };
 
-  return { getNoticias, noticiaSelecionada, getNoticia };
+  return { getNoticias, noticiaSelecionada, getNoticia, getNoticiaPagination };
 });
