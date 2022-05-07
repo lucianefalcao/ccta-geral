@@ -25,7 +25,7 @@ export const useNoticiaStore = defineStore('noticia', () => {
     data: '',
   });
 
-  const ultimaConsulta = ref();
+  const ultimaConsulta = ref({});
 
   async function getNoticias(total: number): Promise<Noticia[]> {
     const querySnapshot = await getDocs(
@@ -82,25 +82,17 @@ export const useNoticiaStore = defineStore('noticia', () => {
   }
 
   async function getNoticiaPagination() {
-    const first = query(
-      noticiaColecao,
-      where('state', '==', 'published'),
-      orderBy('lastModified', 'desc'),
-      limit(20)
+    const docSnap = await getDocs(
+      query(
+        noticiaColecao,
+        where('state', '==', 'published'),
+        orderBy('lastModified', 'desc'),
+        startAfter(ultimaConsulta.value || {}),
+        limit(10)
+      )
     );
-
-    const docSnap = await getDocs(first);
 
     ultimaConsulta.value = docSnap.docs[docSnap.docs.length - 1];
-    console.log('last', ultimaConsulta.value);
-
-    const next = query(
-      noticiaColecao,
-      where('state', '==', 'published'),
-      orderBy('lastModified', 'desc'),
-      startAfter(ultimaConsulta.value),
-      limit(20)
-    );
 
     const noticias: Noticia[] = [];
     for (const doc of docSnap.docs) {
@@ -127,5 +119,11 @@ export const useNoticiaStore = defineStore('noticia', () => {
     return new Date(data).toLocaleDateString('pt-BR');
   };
 
-  return { getNoticias, noticiaSelecionada, getNoticia, getNoticiaPagination };
+  return {
+    getNoticias,
+    noticiaSelecionada,
+    getNoticia,
+    getNoticiaPagination,
+    ultimaConsulta,
+  };
 });

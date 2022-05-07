@@ -5,9 +5,19 @@
 }
 
 .textSubtitle {
-  color: #9BA3AE;
+  color: #9ba3ae;
 }
 
 a {
   text-decoration: none;
+}
+
+.cardNotica {
+  width: 220px;
+}
+
+@media screen and (min-width: 576px) {
+  .cardNotica {
+    width: 550px;
+  }
 }
