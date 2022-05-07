@@ -4,13 +4,14 @@ import Noticia from 'src/models/domain/Noticia';
 import { lineClamp } from '../../utils';
 import { useNoticiaStore } from '../../stores/noticia';
 import { useRouter } from 'vue-router';
+import ErroBanner from '../../components/ErroBanner.vue';
 
 const noticiaStore = useNoticiaStore();
 const Router = useRouter();
 
 const noticias = ref<Noticia[]>([]);
 const carregando = ref<boolean>(false);
-const completa = ref<boolean>(false);
+const mensagemErro = ref<string>('');
 
 const goTo = (noticia: Noticia) => {
   noticiaStore.noticiaSelecionada = noticia;
@@ -27,11 +28,11 @@ const buscarNoticias = async (index: number, done: (stop: boolean) => void) => {
       noticias.value.push(...novasNoticias);
       done(false);
     } else {
-      completa.value = true;
       done(true);
     }
   } catch (e: any) {
-    console.log(e);
+    mensagemErro.value =
+      'Ocorreu um erro ao buscar as notícias, por favor atualize a página.';
   } finally {
     carregando.value = false;
   }
@@ -40,7 +41,9 @@ const buscarNoticias = async (index: number, done: (stop: boolean) => void) => {
 
 <template>
   <div class="row justify-center">
-    <q-list class="column q-mb-sm">
+    <ErroBanner v-if="!carregando && mensagemErro" :mensagem="mensagemErro" />
+
+    <q-list v-else class="column q-mb-sm">
       <q-infinite-scroll @load="buscarNoticias">
         <q-item v-for="noticia in noticias" :key="noticia.uid">
           <q-card flat bordered class="cardNotica">
