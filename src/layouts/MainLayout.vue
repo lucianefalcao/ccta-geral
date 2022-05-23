@@ -47,9 +47,11 @@ onMounted(() => {
         />
 
         <q-toolbar-title class="q-pa-lg">
-          <q-avatar>
-            <img src="../assets/logo.svg" alt="Logo" />
-          </q-avatar>
+          <a href="/">
+            <q-avatar>
+              <img src="../assets/logo.svg" alt="Logo" />
+            </q-avatar>
+          </a>
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
