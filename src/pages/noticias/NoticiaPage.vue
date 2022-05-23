@@ -10,12 +10,17 @@ const $q = useQuasar();
 
 const noticia = ref(noticiaStore.noticiaSelecionada);
 const carregando = ref<boolean>(false);
+const linkWhatsApp = ref('');
+const linkTwitter = ref<string>('');
 
-onMounted(() => {
+onMounted(async () => {
   try {
     carregando.value = true;
     const uid = Route.params.uid as string;
-    noticiaStore.getNoticia(uid);
+    await noticiaStore.getNoticia(uid);
+
+    linkWhatsApp.value = `https://api.whatsapp.com/send?text=${noticiaStore.noticiaSelecionada.titulo} ${window.location.href}`;
+    linkTwitter.value = `https://twitter.com/intent/tweet?text=${noticiaStore.noticiaSelecionada.titulo} ${window.location.href}`;
   } catch (e: any) {
     $q.notify({
       color: 'negative',
@@ -33,12 +38,43 @@ onMounted(() => {
 
 <template>
   <div class="row flex-center">
-    <q-spinner-hourglass v-if="carregando" color="primary" size="2em" />
+    <q-spinner-hourglass
+      v-if="carregando || !noticia.uid"
+      color="primary"
+      size="2em"
+    />
     <q-card
       v-else
       class="q-pa-md q-pa-md-xl q-ma-md-xl"
       style="max-width: 950px"
     >
+      <q-card-actions align="right">
+        <q-btn-dropdown
+          flat
+          icon="o_share"
+          color="primary"
+          dropdown-icon="o_arrow"
+        >
+          <div class="row no-wrap q-pa-md">
+            <q-btn
+              :href="linkWhatsApp"
+              target="_blank"
+              class="column"
+              flat
+              icon="whatsapp"
+              color="green"
+            ></q-btn>
+            <q-btn
+              :href="linkTwitter"
+              target="_blank"
+              class="column"
+              flat
+              icon="mdi-twitter"
+              color="blue"
+            ></q-btn>
+          </div>
+        </q-btn-dropdown>
+      </q-card-actions>
       <q-card-section class="row flex-center">
         <q-img
           v-if="noticia.imgSrc"
