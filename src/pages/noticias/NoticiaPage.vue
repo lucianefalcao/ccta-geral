@@ -3,6 +3,7 @@ import { useQuasar } from 'quasar';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useNoticiaStore } from '../../stores/noticia';
+import ShareButton from 'src/components/ShareButton.vue';
 
 const noticiaStore = useNoticiaStore();
 const Route = useRoute();
@@ -10,8 +11,7 @@ const $q = useQuasar();
 
 const noticia = ref(noticiaStore.noticiaSelecionada);
 const carregando = ref<boolean>(false);
-const linkWhatsApp = ref('');
-const linkTwitter = ref<string>('');
+const textoCompartilhamento = ref('');
 
 onMounted(async () => {
   try {
@@ -19,8 +19,7 @@ onMounted(async () => {
     const uid = Route.params.uid as string;
     await noticiaStore.getNoticia(uid);
 
-    linkWhatsApp.value = `https://api.whatsapp.com/send?text=${noticiaStore.noticiaSelecionada.titulo} ${window.location.href}`;
-    linkTwitter.value = `https://twitter.com/intent/tweet?text=${noticiaStore.noticiaSelecionada.titulo} ${window.location.href}`;
+    textoCompartilhamento.value = `${noticiaStore.noticiaSelecionada.titulo} ${window.location.href}`;
   } catch (e: any) {
     $q.notify({
       color: 'negative',
@@ -49,31 +48,7 @@ onMounted(async () => {
       style="max-width: 950px"
     >
       <q-card-actions align="right">
-        <q-btn-dropdown
-          flat
-          icon="o_share"
-          color="primary"
-          dropdown-icon="o_arrow"
-        >
-          <div class="row no-wrap q-pa-md">
-            <q-btn
-              :href="linkWhatsApp"
-              target="_blank"
-              class="column"
-              flat
-              icon="whatsapp"
-              color="green"
-            ></q-btn>
-            <q-btn
-              :href="linkTwitter"
-              target="_blank"
-              class="column"
-              flat
-              icon="mdi-twitter"
-              color="blue"
-            ></q-btn>
-          </div>
-        </q-btn-dropdown>
+        <ShareButton :texto="textoCompartilhamento" />
       </q-card-actions>
       <q-card-section class="row flex-center">
         <q-img
