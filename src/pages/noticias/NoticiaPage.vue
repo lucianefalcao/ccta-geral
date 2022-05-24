@@ -42,35 +42,40 @@ onMounted(async () => {
       color="primary"
       size="2em"
     />
-    <q-card
-      v-else
-      class="q-pa-md q-pa-md-xl q-ma-md-xl"
-      style="max-width: 950px"
-    >
-      <q-card-actions align="right">
-        <ShareButton :texto="textoCompartilhamento" />
-      </q-card-actions>
-      <q-card-section class="row flex-center">
-        <q-img
-          v-if="noticia.imgSrc"
-          :src="noticia.imgSrc"
-          fit="contain"
-          style="max-height: 300px; max-width: 600px"
-          class="col"
-        ></q-img>
-      </q-card-section>
+    <div v-else>
+      <q-breadcrumbs class="q-mx-md-xl">
+        <q-breadcrumbs-el label="Início" icon="o_home" to="/" />
+        <q-breadcrumbs-el label="Notícias" icon="o_newspaper" to="/noticias" />
+      </q-breadcrumbs>
+      <q-card
+        class="q-pa-md q-pa-md-xl q-mx-md-xl q-my-md-lg"
+        style="max-width: 950px"
+      >
+        <q-card-actions align="right">
+          <ShareButton :texto="textoCompartilhamento" />
+        </q-card-actions>
+        <q-card-section class="row flex-center">
+          <q-img
+            v-if="noticia.imgSrc"
+            :src="noticia.imgSrc"
+            fit="contain"
+            style="max-height: 300px; max-width: 600px"
+            class="col"
+          ></q-img>
+        </q-card-section>
 
-      <q-card-section>
-        <p class="text-h6 lt-md">{{ noticia?.titulo }}</p>
-        <p class="text-h4 gt-sm">{{ noticia?.titulo }}</p>
-        <p class="text-body2">
-          Escrito por Fulano &bull; última atualização em {{ noticia.data }}
-        </p>
-      </q-card-section>
+        <q-card-section>
+          <p class="text-h6 lt-md">{{ noticia?.titulo }}</p>
+          <p class="text-h4 gt-sm">{{ noticia?.titulo }}</p>
+          <p class="text-body2">
+            Escrito por Fulano &bull; última atualização em {{ noticia.data }}
+          </p>
+        </q-card-section>
 
-      <q-card-section>
-        <div v-html="noticia.texto"></div>
-      </q-card-section>
-    </q-card>
+        <q-card-section>
+          <div v-html="noticia.texto"></div>
+        </q-card-section>
+      </q-card>
+    </div>
   </div>
 </template>
