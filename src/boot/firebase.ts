@@ -29,7 +29,7 @@ const createCollection = <T = DocumentData>(collectionName: string) => {
   return collection(db, collectionName) as CollectionReference<T>;
 };
 
-const noticiaColecao = createCollection<Noticia>('news');
+const noticiaColecao = createCollection<Noticia>('noticias');
 
 export { db, storage, noticiaColecao };
 
