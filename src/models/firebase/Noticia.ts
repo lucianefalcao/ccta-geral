@@ -1,8 +1,14 @@
+import { Timestamp } from 'firebase/firestore';
+
 export default interface Noticia {
-  title: string;
-  newsText: string;
-  state: string;
-  lastModified: number;
-  coverPath: string;
-  userUid: string;
+  titulo: string;
+  texto: string;
+  estado: string;
+  criadoEm: Timestamp;
+  criadoPor: string;
+  editadoEm?: Timestamp;
+  editadoPor?: string;
+  publicadoEm?: Timestamp;
+  publicadoPor?: string;
+  capa?: string;
 }

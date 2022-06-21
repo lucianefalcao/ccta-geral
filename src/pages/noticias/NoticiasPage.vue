@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from '@vue/runtime-core';
-import Noticia from 'src/models/domain/Noticia';
+import Noticia from 'src/models/domain/noticias/noticia';
 import { lineClamp } from '../../utils';
 import { useNoticiaStore } from '../../stores/noticia';
 import { useRouter } from 'vue-router';
@@ -16,14 +16,14 @@ const mensagemErro = ref<string>('');
 const goTo = (noticia: Noticia) => {
   noticiaStore.noticiaSelecionada = noticia;
   Router.push({
-    path: `/noticias/${noticia.uid}`,
+    path: `/noticias/${noticia.getId()}`,
   });
 };
 
 const buscarNoticias = async (index: number, done: (stop: boolean) => void) => {
   try {
     carregando.value = true;
-    const novasNoticias = await noticiaStore.getNoticiaPagination();
+    const novasNoticias = await noticiaStore.getNoticiaPaginacao();
     if (novasNoticias.length > 0) {
       noticias.value.push(...novasNoticias);
       done(false);
@@ -31,6 +31,7 @@ const buscarNoticias = async (index: number, done: (stop: boolean) => void) => {
       done(true);
     }
   } catch (e: any) {
+    console.log(e);
     mensagemErro.value =
       'Ocorreu um erro ao buscar as notícias, por favor atualize a página.';
   } finally {
@@ -45,23 +46,23 @@ const buscarNoticias = async (index: number, done: (stop: boolean) => void) => {
 
     <q-list v-else class="column q-mb-sm">
       <q-infinite-scroll @load="buscarNoticias">
-        <q-item v-for="noticia in noticias" :key="noticia.uid">
+        <q-item v-for="noticia in noticias" :key="noticia.getId()">
           <q-card flat bordered class="cardNotica">
             <q-card-section horizontal>
               <q-card-section
-                v-if="noticia.imgSrc"
+                v-if="noticia.getCapa()"
                 class="col-5 flex items-center gt-sm"
               >
-                <q-img class="rounded-borders" :src="noticia.imgSrc" />
+                <q-img class="rounded-borders" :src="noticia.getCapa()" />
               </q-card-section>
 
               <q-card-section class="q-pt-xs">
                 <div class="text-h6 text-justify q-mt-sm q-mb-xs">
-                  {{ noticia.titulo }}
+                  {{ noticia.getTitulo() }}
                 </div>
                 <div
                   class="text-caption text-grey"
-                  v-html="lineClamp(noticia.texto)"
+                  v-html="lineClamp(noticia.getTexto())"
                 ></div>
               </q-card-section>
             </q-card-section>

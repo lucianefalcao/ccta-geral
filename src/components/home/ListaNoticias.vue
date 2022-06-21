@@ -2,7 +2,7 @@
 import CardNoticia from './CardNoticia.vue';
 import ErroBanner from '../ErroBanner.vue';
 import { onMounted, ref } from '@vue/runtime-core';
-import Noticia from '../../models/domain/Noticia';
+import Noticia from '../../models/domain/noticias/noticia';
 import { useNoticiaStore } from '../../stores/noticia';
 
 const noticiaStore = useNoticiaStore();
@@ -38,7 +38,7 @@ onMounted(async () => {
   <CardNoticia
     v-else
     v-for="noticia in noticias"
-    :key="noticia.uid"
+    :key="noticia.getId()"
     :noticia="noticia"
   />
 </template>

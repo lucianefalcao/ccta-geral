@@ -1,4 +1,5 @@
 import {
+  collection,
   doc,
   getDoc,
   getDocs,
@@ -12,27 +13,20 @@ import { ref as refStorage, getDownloadURL } from 'firebase/storage';
 import { db, noticiaColecao, storage } from '../boot/firebase';
 import { defineStore } from 'pinia';
 
-import Noticia from '../models/domain/Noticia';
+import Noticia, { NoticiaEstado } from '../models/domain/noticias/noticia';
 import { ref } from 'vue';
 
 export const useNoticiaStore = defineStore('noticia', () => {
-  const noticiaSelecionada = ref<Noticia>({
-    uid: '',
-    titulo: '',
-    texto: '',
-    estado: '',
-    imgSrc: '',
-    data: '',
-  });
+  const noticiaSelecionada = ref<Noticia>();
 
   const ultimaConsulta = ref({});
 
   async function getNoticias(total: number): Promise<Noticia[]> {
     const querySnapshot = await getDocs(
       query(
-        noticiaColecao,
-        where('state', '==', 'published'),
-        orderBy('lastModified', 'desc'),
+        collection(db, 'noticias'),
+        where('estado', '==', NoticiaEstado.PUBLICADO),
+        orderBy('publicadoEm', 'desc'),
         limit(total)
       )
     );
@@ -40,53 +34,67 @@ export const useNoticiaStore = defineStore('noticia', () => {
 
     for (const doc of querySnapshot.docs) {
       let url = '';
-      if (doc.data().coverPath) {
-        url = await getDownloadURL(refStorage(storage, doc.data().coverPath));
+      if (doc.data().capa) {
+        url = await getDownloadURL(refStorage(storage, doc.data().capa));
       }
 
-      const readableDate = lastModified(doc.data().lastModified);
-      noticias.push({
-        uid: doc.id,
-        titulo: doc.data().title,
-        texto: doc.data().newsText,
-        data: readableDate,
-        estado: doc.data().state,
-        imgSrc: url,
-      });
+      // const readableDate = lastModified(doc.data().lastModified);
+      noticias.push(
+        new Noticia(
+          doc.id,
+          doc.data().titulo,
+          doc.data().texto,
+          doc.data().estado as NoticiaEstado,
+          doc.data().criadoPor,
+          doc.data().criadoEm.toDate(),
+          doc.data().publicadoEm?.toDate() ?? null,
+          doc.data().publicadoPor ?? null,
+          url,
+          doc.data().editadoPor ?? null,
+          doc.data().editadoEm?.toDate() ?? null
+        )
+      );
     }
 
     return noticias;
   }
 
   async function getNoticia(uid: string) {
-    if (!noticiaSelecionada.value.uid) {
-      const docSnapshot = await getDoc(doc(db, 'news', uid));
+    if (!noticiaSelecionada.value.getId()) {
+      const docSnapshot = await getDoc(doc(db, 'noticiais', uid));
 
       if (docSnapshot.exists()) {
         let url = '';
-        if (docSnapshot.data().coverPath) {
+        if (docSnapshot.data().capa) {
           url = await getDownloadURL(
-            refStorage(storage, docSnapshot.data().coverPath)
+            refStorage(storage, docSnapshot.data().capa)
           );
         }
 
-        const readableDate = lastModified(docSnapshot.data().lastModified);
-        noticiaSelecionada.value.uid = docSnapshot.id;
-        noticiaSelecionada.value.titulo = docSnapshot.data().title;
-        noticiaSelecionada.value.texto = docSnapshot.data().newsText;
-        noticiaSelecionada.value.estado = docSnapshot.data().state;
-        noticiaSelecionada.value.imgSrc = url;
-        noticiaSelecionada.value.data = readableDate;
+        // const readableDate = lastModified(docSnapshot.data().lastModified);
+        noticiaSelecionada.value = new Noticia(
+          docSnapshot.id,
+          docSnapshot.data().titulo,
+          docSnapshot.data().texto,
+          docSnapshot.data().estado as NoticiaEstado,
+          docSnapshot.data().criadoPor,
+          docSnapshot.data().criadoEm.toDate(),
+          docSnapshot.data().publicadoEm?.toDate() ?? null,
+          docSnapshot.data().publicadoPor ?? null,
+          url,
+          docSnapshot.data().editadoPor ?? null,
+          docSnapshot.data().editadoEm?.toDate() ?? null
+        );
       }
     }
   }
 
-  async function getNoticiaPagination() {
+  async function getNoticiaPaginacao() {
     const docSnap = await getDocs(
       query(
         noticiaColecao,
-        where('state', '==', 'published'),
-        orderBy('lastModified', 'desc'),
+        where('estado', '==', NoticiaEstado.PUBLICADO),
+        orderBy('publicadoEm', 'desc'),
         startAfter(ultimaConsulta.value || {}),
         limit(10)
       )
@@ -97,19 +105,26 @@ export const useNoticiaStore = defineStore('noticia', () => {
     const noticias: Noticia[] = [];
     for (const doc of docSnap.docs) {
       let url = '';
-      if (doc.data().coverPath) {
-        url = await getDownloadURL(refStorage(storage, doc.data().coverPath));
+      if (doc.data().capa) {
+        url = await getDownloadURL(refStorage(storage, doc.data().capa));
       }
 
-      const readableDate = lastModified(doc.data().lastModified);
-      noticias.push({
-        uid: doc.id,
-        titulo: doc.data().title,
-        texto: doc.data().newsText,
-        data: readableDate,
-        estado: doc.data().state,
-        imgSrc: url,
-      });
+      // const readableDate = lastModified(doc.data().lastModified);
+      noticias.push(
+        new Noticia(
+          doc.id,
+          doc.data().titulo,
+          doc.data().texto,
+          doc.data().estado as NoticiaEstado,
+          doc.data().criadoPor,
+          doc.data().criadoEm.toDate(),
+          doc.data().publicadoEm?.toDate() ?? null,
+          doc.data().publicadoPor ?? null,
+          url,
+          doc.data().editadoPor ?? null,
+          doc.data().editadoEm?.toDate() ?? null
+        )
+      );
     }
 
     return noticias;
@@ -123,7 +138,7 @@ export const useNoticiaStore = defineStore('noticia', () => {
     getNoticias,
     noticiaSelecionada,
     getNoticia,
-    getNoticiaPagination,
+    getNoticiaPaginacao,
     ultimaConsulta,
   };
 });
