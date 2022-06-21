@@ -4,7 +4,7 @@ import { useQuasar } from 'quasar';
 import EssentialLink from 'components/EssentialLink.vue';
 
 const $q = useQuasar();
-const essentialLinks = [
+const linksEssenciais = [
   {
     title: 'Atendimento',
     caption: 'Tire suas dúvidas',
@@ -19,14 +19,14 @@ const essentialLinks = [
   },
 ];
 
-const leftDrawerOpen = ref(false);
-const toggleLeftDrawer = () => {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
+const drawerAberto = ref(false);
+const toggleDrawer = () => {
+  drawerAberto.value = !drawerAberto.value;
 };
 
 onMounted(() => {
   if ($q.platform.is.desktop) {
-    leftDrawerOpen.value = true;
+    drawerAberto.value = true;
     return;
   }
 });
@@ -43,7 +43,7 @@ onMounted(() => {
           icon="o_menu"
           aria-label="Menu"
           class="lt-md"
-          @click="toggleLeftDrawer"
+          @click="toggleDrawer"
         />
 
         <q-toolbar-title class="q-pa-lg">
@@ -56,7 +56,7 @@ onMounted(() => {
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen">
+    <q-drawer v-model="drawerAberto">
       <q-list>
         <div class="row justify-between items-center">
           <q-item-label header> Menu </q-item-label>
@@ -65,12 +65,12 @@ onMounted(() => {
             flat
             icon-right="o_close"
             class="q-pr-lg lt-md"
-            @click="toggleLeftDrawer"
+            @click="toggleDrawer"
           />
         </div>
 
         <EssentialLink
-          v-for="link in essentialLinks"
+          v-for="link in linksEssenciais"
           :key="link.title"
           v-bind="link"
         />
