@@ -3,11 +3,10 @@ import MenuItemBotao from './MenuItemBotao.vue';
 
 const menusItens = [
   { titulo: 'Sobre', icone: 'o_info', rota: '#' },
-  { titulo: 'Notícias', icone: 'o_newspaper', rota: '#' },
+  { titulo: 'Notícias', icone: 'o_newspaper', rota: '/noticias' },
   { titulo: 'Eventos', icone: 'o_event', rota: '#' },
-  { titulo: 'Editais', icone: 'o_campaign', rota: '#' }
-]
-
+  { titulo: 'Editais', icone: 'o_campaign', rota: '#' },
+];
 </script>
 
 <template>
