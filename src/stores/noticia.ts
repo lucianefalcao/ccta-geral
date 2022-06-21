@@ -38,7 +38,6 @@ export const useNoticiaStore = defineStore('noticia', () => {
         url = await getDownloadURL(refStorage(storage, doc.data().capa));
       }
 
-      // const readableDate = lastModified(doc.data().lastModified);
       noticias.push(
         new Noticia(
           doc.id,
