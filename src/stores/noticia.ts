@@ -60,8 +60,8 @@ export const useNoticiaStore = defineStore('noticia', () => {
   }
 
   async function getNoticia(uid: string) {
-    if (!noticiaSelecionada.value.getId()) {
-      const docSnapshot = await getDoc(doc(db, 'noticiais', uid));
+    if (!noticiaSelecionada.value) {
+      const docSnapshot = await getDoc(doc(db, 'noticias', uid));
 
       if (docSnapshot.exists()) {
         let url = '';
@@ -71,7 +71,6 @@ export const useNoticiaStore = defineStore('noticia', () => {
           );
         }
 
-        // const readableDate = lastModified(docSnapshot.data().lastModified);
         noticiaSelecionada.value = new Noticia(
           docSnapshot.id,
           docSnapshot.data().titulo,

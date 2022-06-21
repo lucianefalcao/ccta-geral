@@ -5,12 +5,13 @@ import { useRoute } from 'vue-router';
 import { useNoticiaStore } from '../../stores/noticia';
 import ShareButton from 'src/components/ShareButton.vue';
 import { dataLegivel } from 'src/utils';
+import Noticia from 'src/models/domain/noticias/noticia';
 
 const noticiaStore = useNoticiaStore();
 const Route = useRoute();
 const $q = useQuasar();
 
-const noticia = ref(noticiaStore.noticiaSelecionada);
+const noticia = ref<Noticia>();
 const carregando = ref<boolean>(false);
 const textoCompartilhamento = ref('');
 
@@ -18,16 +19,34 @@ const publicadoEm = computed<string | null>(() => {
   return dataLegivel(noticia.value.getPublicadoEm());
 });
 
+const editadoEm = computed<string | null>(() => {
+  return dataLegivel(noticia.value.getEditadoEm());
+});
+
+const texto = computed<string>(() => {
+  return noticia.value.getTexto();
+});
+
+const titulo = computed<string>(() => {
+  return noticia.value.getTitulo();
+});
+
 onMounted(async () => {
   try {
     carregando.value = true;
-    const uid = Route.params.uid as string;
-    await noticiaStore.getNoticia(uid);
 
-    textoCompartilhamento.value = `${noticiaStore.noticiaSelecionada.getTitulo()} ${
+    if (!noticiaStore.noticiaSelecionada) {
+      const uid = Route.params.uid as string;
+      await noticiaStore.getNoticia(uid);
+    }
+
+    noticia.value = noticiaStore.noticiaSelecionada as Noticia;
+
+    textoCompartilhamento.value = `${noticia.value.getTitulo()} ${
       window.location.href
     }`;
   } catch (e: any) {
+    console.log(e);
     $q.notify({
       color: 'negative',
       message:
@@ -45,7 +64,7 @@ onMounted(async () => {
 <template>
   <div class="row flex-center">
     <q-spinner-hourglass
-      v-if="carregando || !noticia.getId()"
+      v-if="carregando || !noticia?.getId()"
       color="primary"
       size="2em"
     />
@@ -72,15 +91,19 @@ onMounted(async () => {
         </q-card-section>
 
         <q-card-section>
-          <p class="text-h6 lt-md">{{ noticia?.getTitulo() }}</p>
-          <p class="text-h4 gt-sm">{{ noticia?.getTitulo() }}</p>
+          <p class="text-h6 lt-md">{{ titulo }}</p>
+          <p class="text-h4 gt-sm">{{ titulo }}</p>
           <p class="text-body2">
-            Escrito por Fulano &bull; última atualização em {{ publicadoEm }}
+            <span>Escrito por Fulano &bull; escrito em {{ publicadoEm }}</span>
+            <br />
+            <span v-if="editadoEm">
+              Editado por Fulano &bull; editado em {{ editadoEm }}
+            </span>
           </p>
         </q-card-section>
 
         <q-card-section>
-          <div v-html="noticia.getTexto()"></div>
+          <div v-html="texto"></div>
         </q-card-section>
       </q-card>
     </div>

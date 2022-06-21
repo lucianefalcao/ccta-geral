@@ -6,7 +6,7 @@ const lineClamp = (texto: string) => {
   return texto;
 };
 
-const dataLegivel = (data: Date): string | null => {
+const dataLegivel = (data: Date | null): string | null => {
   return data?.toLocaleDateString('pt-BR') ?? null;
 };
 
