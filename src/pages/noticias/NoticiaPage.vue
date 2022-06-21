@@ -3,15 +3,20 @@ import { useQuasar } from 'quasar';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useNoticiaStore } from '../../stores/noticia';
+import { useUsuarioStore } from '../../stores/usuario';
 import ShareButton from 'src/components/ShareButton.vue';
 import { dataLegivel } from 'src/utils';
 import Noticia from 'src/models/domain/noticias/noticia';
+import Usuario from 'src/models/domain/usuarios/usuario';
 
 const noticiaStore = useNoticiaStore();
+const usuarioStore = useUsuarioStore();
 const Route = useRoute();
 const $q = useQuasar();
 
 const noticia = ref<Noticia>();
+const usuarioCriador = ref<Usuario>();
+const usuarioEditor = ref<Usuario>();
 const carregando = ref<boolean>(false);
 const textoCompartilhamento = ref('');
 
@@ -31,6 +36,14 @@ const titulo = computed<string>(() => {
   return noticia.value.getTitulo();
 });
 
+const nomeUsuarioCriador = computed<string>(() => {
+  return usuarioCriador.value?.getNome() ?? 'Usuário não identificado';
+});
+
+const nomeUsuarioEditor = computed<string>(() => {
+  return usuarioEditor.value?.getNome() ?? 'Usuário não identificado';
+});
+
 onMounted(async () => {
   try {
     carregando.value = true;
@@ -41,6 +54,16 @@ onMounted(async () => {
     }
 
     noticia.value = noticiaStore.noticiaSelecionada as Noticia;
+
+    usuarioCriador.value = await usuarioStore.getUsuario(
+      noticia.value.getCriadoPor()
+    );
+
+    if (noticia.value.getEditadoEm()) {
+      usuarioEditor.value = await usuarioStore.getUsuario(
+        noticia.value.getEditadoPor()
+      );
+    }
 
     textoCompartilhamento.value = `${noticia.value.getTitulo()} ${
       window.location.href
@@ -94,10 +117,14 @@ onMounted(async () => {
           <p class="text-h6 lt-md">{{ titulo }}</p>
           <p class="text-h4 gt-sm">{{ titulo }}</p>
           <p class="text-body2">
-            <span>Escrito por Fulano &bull; escrito em {{ publicadoEm }}</span>
+            <span>
+              Escrito por {{ nomeUsuarioCriador }} &bull; escrito em
+              {{ publicadoEm }}
+            </span>
             <br />
             <span v-if="editadoEm">
-              Editado por Fulano &bull; editado em {{ editadoEm }}
+              Editado por {{ nomeUsuarioEditor }} &bull; editado em
+              {{ editadoEm }}
             </span>
           </p>
         </q-card-section>
