@@ -107,7 +107,6 @@ export const useNoticiaStore = defineStore('noticia', () => {
         url = await getDownloadURL(refStorage(storage, doc.data().capa));
       }
 
-      // const readableDate = lastModified(doc.data().lastModified);
       noticias.push(
         new Noticia(
           doc.id,
@@ -127,10 +126,6 @@ export const useNoticiaStore = defineStore('noticia', () => {
 
     return noticias;
   }
-
-  const lastModified = (data: number): string => {
-    return new Date(data).toLocaleDateString('pt-BR');
-  };
 
   return {
     getNoticias,
