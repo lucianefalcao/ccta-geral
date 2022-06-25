@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { conditionalExpression } from '@babel/types';
 import { ref } from '@vue/reactivity';
 import { computed } from '@vue/runtime-core';
 import { useQuasar } from 'quasar';
@@ -81,10 +82,11 @@ const buscarCursos = async (index: number, done: (stop: boolean) => void) => {
       <q-list class="column q-mb-sm q-mt-lg">
         <q-infinite-scroll @load="buscarCursos">
           <q-expansion-item
-            popup
-            style="max-width: 550px"
             v-for="curso in cursos"
             :key="curso.getId()"
+            popup
+            style="max-width: 550px"
+            class="q-mx-sm"
             :label="curso.getNome()"
             :caption="tipo(curso) + ' &bull; ' + subtipo(curso)"
             :header-style="{ color: '#ff5252' }"
