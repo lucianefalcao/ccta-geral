@@ -9,6 +9,7 @@ import {
   connectFirestoreEmulator,
 } from 'firebase/firestore';
 import { connectStorageEmulator, getStorage } from 'firebase/storage';
+import { connectDatabaseEmulator, getDatabase } from 'firebase/database';
 
 import Noticia from '../models/firebase/Noticia';
 
@@ -24,13 +25,13 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const storage = getStorage(app);
+const database = getDatabase(app);
+
 if (process.env.ENV === 'dev') {
   connectFirestoreEmulator(db, '127.0.0.1', 8082);
-}
-
-const storage = getStorage(app);
-if (process.env.ENV === 'dev') {
   connectStorageEmulator(storage, 'localhost', 9199);
+  connectDatabaseEmulator(database, 'localhost', 9000);
 }
 
 const createCollection = <T = DocumentData>(collectionName: string) => {
@@ -39,7 +40,7 @@ const createCollection = <T = DocumentData>(collectionName: string) => {
 
 const noticiaColecao = createCollection<Noticia>('noticias');
 
-export { db, storage, noticiaColecao };
+export { db, storage, database, noticiaColecao };
 
 // "async" is optional;
 // more info on params: https://v2.quasar.dev/quasar-cli/boot-files
