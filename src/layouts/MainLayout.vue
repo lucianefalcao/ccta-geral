@@ -9,7 +9,7 @@ const linksEssenciais = [
     title: 'Atendimento',
     caption: 'Tire suas dúvidas',
     icon: 'o_chat',
-    link: '#',
+    link: '/atendimento',
   },
   {
     title: 'Cursos',

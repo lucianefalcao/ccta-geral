@@ -32,6 +32,10 @@ const routes: RouteRecordRaw[] = [
         path: '/cursos',
         component: () => import('pages/cursos/CursosIndex.vue'),
       },
+      {
+        path: '/atendimento',
+        component: () => import('pages/atendimento/AtendimentoIndex.vue'),
+      },
     ],
   },
 
