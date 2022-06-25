@@ -38,7 +38,7 @@ const buscarNoticias = async (index: number, done: (stop: boolean) => void) => {
     } else {
       done(true);
     }
-  } catch (e: any) {
+  } catch (e) {
     mensagemErro.value =
       'Ocorreu um erro ao buscar as notícias, por favor atualize a página.';
   } finally {
