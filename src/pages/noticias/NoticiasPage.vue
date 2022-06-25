@@ -44,44 +44,50 @@ const buscarNoticias = async (index: number, done: (stop: boolean) => void) => {
   <div class="row justify-center">
     <ErroBanner v-if="!carregando && mensagemErro" :mensagem="mensagemErro" />
 
-    <q-list v-else class="column q-mb-sm">
-      <q-infinite-scroll @load="buscarNoticias">
-        <q-item v-for="noticia in noticias" :key="noticia.getId()">
-          <q-card flat bordered class="cardNotica">
-            <q-card-section horizontal>
-              <q-card-section
-                v-if="noticia.getCapa()"
-                class="col-5 flex items-center gt-sm"
-              >
-                <q-img class="rounded-borders" :src="noticia.getCapa()" />
+    <div v-else>
+      <q-breadcrumbs v-if="!carregando" class="q-mx-md-xl">
+        <q-breadcrumbs-el label="Início" icon="o_home" to="/" />
+      </q-breadcrumbs>
+
+      <q-list class="column q-mb-sm">
+        <q-infinite-scroll @load="buscarNoticias">
+          <q-item v-for="noticia in noticias" :key="noticia.getId()">
+            <q-card flat bordered class="cardNotica">
+              <q-card-section horizontal>
+                <q-card-section
+                  v-if="noticia.getCapa()"
+                  class="col-5 flex items-center gt-sm"
+                >
+                  <q-img class="rounded-borders" :src="noticia.getCapa()" />
+                </q-card-section>
+
+                <q-card-section class="q-pt-xs">
+                  <div class="text-h6 text-justify q-mt-sm q-mb-xs">
+                    {{ noticia.getTitulo() }}
+                  </div>
+                  <div
+                    class="text-caption text-grey"
+                    v-html="lineClamp(noticia.getTexto())"
+                  ></div>
+                </q-card-section>
               </q-card-section>
 
-              <q-card-section class="q-pt-xs">
-                <div class="text-h6 text-justify q-mt-sm q-mb-xs">
-                  {{ noticia.getTitulo() }}
-                </div>
-                <div
-                  class="text-caption text-grey"
-                  v-html="lineClamp(noticia.getTexto())"
-                ></div>
-              </q-card-section>
-            </q-card-section>
+              <q-separator />
 
-            <q-separator />
-
-            <q-card-actions align="right">
-              <q-btn @click="goTo(noticia)" flat color="primary">
-                detalhes
-              </q-btn>
-            </q-card-actions>
-          </q-card>
-        </q-item>
-        <template v-slot:loading>
-          <div class="row justify-center q-my-md">
-            <q-spinner-hourglass color="primary" size="40px" />
-          </div>
-        </template>
-      </q-infinite-scroll>
-    </q-list>
+              <q-card-actions align="right">
+                <q-btn @click="goTo(noticia)" flat color="primary">
+                  detalhes
+                </q-btn>
+              </q-card-actions>
+            </q-card>
+          </q-item>
+          <template v-slot:loading>
+            <div class="row justify-center q-my-md">
+              <q-spinner-hourglass color="primary" size="40px" />
+            </div>
+          </template>
+        </q-infinite-scroll>
+      </q-list>
+    </div>
   </div>
 </template>
