@@ -11,6 +11,7 @@ import { db } from '../boot/firebase';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import Evento from 'src/models/domain/eventos/evento';
+import dayjs from 'dayjs';
 
 export const useEventoStore = defineStore('evento', () => {
   const eventoSelecionado = ref<Evento>();
@@ -37,21 +38,8 @@ export const useEventoStore = defineStore('evento', () => {
   }
 
   async function getEventos(): Promise<Evento[]> {
-    const dataHoje = new Date();
-    const primeiroDiaDoMes = new Date(
-      dataHoje.getFullYear(),
-      dataHoje.getMonth(),
-      1,
-      dataHoje.getHours(),
-      dataHoje.getMinutes()
-    );
-    const ultimoDiaDoMes = new Date(
-      dataHoje.getFullYear(),
-      dataHoje.getMonth() + 1,
-      0,
-      dataHoje.getHours(),
-      dataHoje.getMinutes()
-    );
+    const primeiroDiaDoMes = dayjs().startOf('M');
+    const ultimoDiaDoMes = dayjs().endOf('M');
     const docSnap = await getDocs(
       query(
         collection(db, 'eventos'),
