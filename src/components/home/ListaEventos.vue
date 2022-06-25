@@ -34,7 +34,7 @@ onMounted(async () => {
     color="primary"
     class="q-ma-md"
   />
-  <div v-if="!carregando && eventos.length === 0">
+  <div v-if="!carregando && !mensagemErro && eventos.length === 0">
     <p>Nenhuma notícia cadastrada</p>
   </div>
   <CardEvento
