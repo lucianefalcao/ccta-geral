@@ -56,7 +56,7 @@ const buscarNoticias = async (index: number, done: (stop: boolean) => void) => {
         <q-breadcrumbs-el label="Início" icon="o_home" to="/" />
       </q-breadcrumbs>
 
-      <q-list class="column q-mb-sm">
+      <q-list class="column q-mb-sm q-mt-lg">
         <q-infinite-scroll @load="buscarNoticias">
           <q-item v-for="noticia in noticias" :key="noticia.getId()">
             <q-card flat bordered class="cardNotica">

@@ -91,20 +91,19 @@ onMounted(async () => {
       size="2em"
     />
     <div v-else>
-      <q-breadcrumbs class="q-mx-md-xl">
+      <q-breadcrumbs class="q-mx-md-xl q-my-lg">
         <q-breadcrumbs-el label="Início" icon="o_home" to="/" />
         <q-breadcrumbs-el label="Notícias" icon="o_newspaper" to="/noticias" />
       </q-breadcrumbs>
       <q-card
-        class="q-pa-md q-pa-md-xl q-mx-md-xl q-my-md-lg"
+        class="q-pa-md q-pa-md-xl q-mx-md-xl q-my-lg"
         style="max-width: 950px"
       >
         <q-card-actions align="right">
           <ShareButton :texto="textoCompartilhamento" />
         </q-card-actions>
-        <q-card-section class="row flex-center">
+        <q-card-section v-if="noticia.getCapa()" class="row flex-center">
           <q-img
-            v-if="noticia.getCapa()"
             :src="noticia.getCapa()"
             fit="contain"
             style="max-height: 300px; max-width: 600px"
