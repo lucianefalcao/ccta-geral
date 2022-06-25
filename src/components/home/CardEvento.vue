@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { computed } from '@vue/runtime-core';
 import Evento from 'src/models/domain/eventos/evento';
-import { useRouter } from 'vue-router';
 import { lineClamp, dataLegivel } from '../../utils';
+import dayjs from 'dayjs';
 
 const props = defineProps<{
   evento: Evento;
 }>();
-
-const Router = useRouter();
 
 const data = computed<string>(() => {
   return dataLegivel(props.evento.getData());
@@ -31,6 +29,20 @@ const descricao = computed<string>(() => {
 const rota = computed<string>(() => {
   return `/eventos/${props.evento.getId()}`;
 });
+
+const linkCalendario = computed(() => {
+  const dataEvento = dayjs(props.evento.getData());
+  const inicio = dataEvento.toISOString().replace(/-|:|\./g, '');
+
+  const fim = dataEvento
+    .add(1, 'h')
+    .toISOString()
+    .replace(/-|:|\./g, '');
+
+  const local = 'Centro+De+Comunicação,+Turismo+e+Artes+-+CCTA/UFPB';
+
+  return `https://www.google.com/calendar/render?action=TEMPLATE&text=${titulo.value}&dates=${inicio}/${fim}&details=${descricao.value}&location=${local}&sf=true&output=xml`;
+});
 </script>
 
 <template>
@@ -44,7 +56,13 @@ const rota = computed<string>(() => {
     <q-separator />
 
     <q-card-actions>
-      <q-btn disable flat round icon="o_insert_invitation">
+      <q-btn
+        :href="linkCalendario"
+        target="_blank"
+        flat
+        round
+        icon="o_insert_invitation"
+      >
         {{ hora }}
       </q-btn>
       <q-btn flat color="primary" :to="rota"> Detalhes </q-btn>
