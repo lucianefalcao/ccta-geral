@@ -36,3 +36,11 @@ yarn-error.log*
 .firebase
 .github
 .env
+database-debug.log
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+firestore.rules
+firestore.indexes.json
+database.rules.json
+storage.rules
