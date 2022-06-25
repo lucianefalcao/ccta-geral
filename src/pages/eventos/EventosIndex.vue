@@ -18,7 +18,7 @@ onMounted(async () => {
     mensagemErro.value = '';
     carregando.value = true;
     eventos.value = await eventoStore.getEventos();
-  } catch (e: any) {
+  } catch (e) {
     mensagemErro.value =
       'Ocorreu um erro ao buscar as notícias, por favor atualize a página.';
   } finally {
