@@ -24,6 +24,10 @@ const routes: RouteRecordRaw[] = [
         name: 'evento',
         component: () => import('pages/eventos/EventoDetalhe.vue'),
       },
+      {
+        path: '/editais',
+        component: () => import('pages/editais/EditaisIndex.vue'),
+      },
     ],
   },
 
