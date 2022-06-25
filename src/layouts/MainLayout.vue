@@ -15,7 +15,7 @@ const linksEssenciais = [
     title: 'Cursos',
     caption: 'Veja os cursos do nosso centro',
     icon: 'o_school',
-    link: '#',
+    link: '/cursos',
   },
 ];
 

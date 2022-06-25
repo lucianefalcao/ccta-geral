@@ -28,6 +28,10 @@ const routes: RouteRecordRaw[] = [
         path: '/editais',
         component: () => import('pages/editais/EditaisIndex.vue'),
       },
+      {
+        path: '/cursos',
+        component: () => import('pages/cursos/CursosIndex.vue'),
+      },
     ],
   },
 
