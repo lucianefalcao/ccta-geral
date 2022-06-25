@@ -46,7 +46,7 @@ const linkCalendario = computed(() => {
 </script>
 
 <template>
-  <q-card class="col-md-3" flat bordered style="max-width: 300px">
+  <q-card class="col-md-12" flat bordered style="max-width: 300px">
     <q-card-section class="q-pt-xs">
       <div class="text-overline">{{ data }}</div>
       <div class="text-h5 q-mt-sm q-mb-xs">{{ titulo }}</div>
@@ -65,6 +65,7 @@ const linkCalendario = computed(() => {
       >
         {{ hora }}
       </q-btn>
+      <q-space></q-space>
       <q-btn flat color="primary" :to="rota"> Detalhes </q-btn>
     </q-card-actions>
   </q-card>
