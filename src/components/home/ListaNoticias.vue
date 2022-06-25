@@ -35,6 +35,9 @@ onMounted(async () => {
     color="primary"
     class="q-ma-md"
   />
+  <div v-if="!carregando && noticias.length === 0">
+    <p>Nenhuma notícia cadastrada</p>
+  </div>
   <CardNoticia
     v-else
     v-for="noticia in noticias"
