@@ -1,13 +1,21 @@
 <script setup lang="ts">
-import { ref } from '@vue/runtime-core';
+import { computed, ref } from '@vue/runtime-core';
 import Noticia from 'src/models/domain/noticias/noticia';
 import { lineClamp } from '../../utils';
 import { useNoticiaStore } from '../../stores/noticia';
 import { useRouter } from 'vue-router';
 import ErroBanner from '../../components/ErroBanner.vue';
+import { useQuasar } from 'quasar';
 
 const noticiaStore = useNoticiaStore();
 const Router = useRouter();
+const $q = useQuasar();
+
+const espacamento = computed(() => {
+  return $q.screen.name === 'xs' || $q.screen.name === 'sm'
+    ? 'q-mt-xl'
+    : 'q-mt-lg';
+});
 
 const noticias = ref<Noticia[]>([]);
 const carregando = ref<boolean>(false);
@@ -43,8 +51,8 @@ const buscarNoticias = async (index: number, done: (stop: boolean) => void) => {
   <div class="row justify-center">
     <ErroBanner v-if="!carregando && mensagemErro" :mensagem="mensagemErro" />
 
-    <div v-else>
-      <q-breadcrumbs v-if="!carregando" class="q-mx-md-xl">
+    <div v-else :class="espacamento">
+      <q-breadcrumbs v-if="!carregando" class="q-mx-md">
         <q-breadcrumbs-el label="Início" icon="o_home" to="/" />
       </q-breadcrumbs>
 
