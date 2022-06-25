@@ -68,7 +68,7 @@ onMounted(async () => {
     textoCompartilhamento.value = `${noticia.value.getTitulo()} ${
       window.location.href
     }`;
-  } catch (e: any) {
+  } catch (e) {
     $q.notify({
       color: 'negative',
       message:
