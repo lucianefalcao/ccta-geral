@@ -69,7 +69,6 @@ onMounted(async () => {
       window.location.href
     }`;
   } catch (e: any) {
-    console.log(e);
     $q.notify({
       color: 'negative',
       message:
