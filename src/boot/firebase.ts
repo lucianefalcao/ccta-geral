@@ -6,8 +6,9 @@ import {
   collection,
   DocumentData,
   CollectionReference,
+  connectFirestoreEmulator,
 } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import { connectStorageEmulator, getStorage } from 'firebase/storage';
 
 import Noticia from '../models/firebase/Noticia';
 
@@ -23,7 +24,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+if (process.env.ENV === 'dev') {
+  connectFirestoreEmulator(db, '127.0.0.1', 8082);
+}
+
 const storage = getStorage(app);
+if (process.env.ENV === 'dev') {
+  connectStorageEmulator(storage, 'localhost', 9199);
+}
 
 const createCollection = <T = DocumentData>(collectionName: string) => {
   return collection(db, collectionName) as CollectionReference<T>;
