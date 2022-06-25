@@ -9,6 +9,7 @@ import Usuario from 'src/models/domain/usuarios/usuario';
 import Evento from 'src/models/domain/eventos/evento';
 import { useEventoStore } from 'src/stores/evento';
 import dayjs from 'dayjs';
+import { assertBinary } from '@babel/types';
 
 const eventoStore = useEventoStore();
 const usuarioStore = useUsuarioStore();
@@ -86,6 +87,11 @@ onMounted(async () => {
     carregando.value = false;
   }
 });
+
+const abrirAgenda = (evento: Evento) => {
+  const link = adicionarEventoAgenda(evento);
+  window.open(link, '_blank').focus();
+};
 </script>
 
 <template>
@@ -105,6 +111,17 @@ onMounted(async () => {
         style="max-width: 950px"
       >
         <q-card-actions align="right">
+          <q-chip
+            outline
+            color="primary"
+            text-color="white"
+            icon="event"
+            clickable
+            @click="abrirAgenda(evento)"
+          >
+            Adicionar ao calendário
+          </q-chip>
+          <q-space></q-space>
           <ShareButton :texto="textoCompartilhamento" />
         </q-card-actions>
 
@@ -128,18 +145,6 @@ onMounted(async () => {
         <q-card-section>
           <div v-html="descricao"></div>
         </q-card-section>
-
-        <q-separator></q-separator>
-
-        <q-card-actions align="center">
-          <q-btn
-            :href="adicionarEventoAgenda(evento)"
-            target="_blank"
-            outline
-            color="primary"
-            label="Adicionar ao Google Agenda"
-          ></q-btn>
-        </q-card-actions>
       </q-card>
     </div>
   </div>
