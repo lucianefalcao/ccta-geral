@@ -2,6 +2,7 @@
 import { computed } from '@vue/runtime-core';
 import Evento from 'src/models/domain/eventos/evento';
 import { lineClamp, dataLegivel, adicionarEventoAgenda } from '../../utils';
+import dayjs from 'dayjs';
 
 const props = defineProps<{
   evento: Evento;
@@ -11,11 +12,9 @@ const data = computed<string>(() => {
   return dataLegivel(props.evento.getData());
 });
 
-const hora = computed<string>(() => {
-  return props.evento
-    .getData()
-    ?.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-});
+const hora = computed<string>(() =>
+  dayjs(props.evento.getData()).format('HH:mm')
+);
 
 const titulo = computed<string>(() => {
   return props.evento.getTitulo();

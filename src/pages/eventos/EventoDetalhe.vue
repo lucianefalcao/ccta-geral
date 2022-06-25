@@ -8,6 +8,7 @@ import { dataLegivel, adicionarEventoAgenda } from 'src/utils';
 import Usuario from 'src/models/domain/usuarios/usuario';
 import Evento from 'src/models/domain/eventos/evento';
 import { useEventoStore } from 'src/stores/evento';
+import dayjs from 'dayjs';
 
 const eventoStore = useEventoStore();
 const usuarioStore = useUsuarioStore();
@@ -29,13 +30,7 @@ const criadoEm = computed<string | null>(() => {
 });
 
 const data = computed<string | null>(() => {
-  return dataLegivel(evento.value.getData());
-});
-
-const hora = computed<string | null>(() => {
-  return evento.value
-    .getData()
-    ?.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  return dayjs(evento.value.getData()).format('DD/MM/YYYY - HH:mm');
 });
 
 const descricao = computed<string>(() => {
@@ -114,7 +109,7 @@ onMounted(async () => {
         </q-card-actions>
 
         <q-card-section>
-          <p class="text-overline">{{ data }} - {{ hora }}</p>
+          <p class="text-overline">{{ data }}</p>
           <p class="text-h6 lt-md">{{ titulo }}</p>
           <p class="text-h4 gt-sm">{{ titulo }}</p>
           <p class="text-body2">

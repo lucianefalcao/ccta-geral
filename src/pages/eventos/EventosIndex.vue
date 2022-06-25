@@ -4,7 +4,6 @@ import Evento from 'src/models/domain/eventos/evento';
 import { useEventoStore } from 'src/stores/evento';
 import CardEvento from '../../components/home/CardEvento.vue';
 import ErroBanner from '../../components/ErroBanner.vue';
-import { lineClamp, dataLegivel } from '../../utils';
 import { useQuasar } from 'quasar';
 
 const eventoStore = useEventoStore();
