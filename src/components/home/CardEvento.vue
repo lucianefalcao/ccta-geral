@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed } from '@vue/runtime-core';
 import Evento from 'src/models/domain/eventos/evento';
-import { lineClamp, dataLegivel } from '../../utils';
-import dayjs from 'dayjs';
+import { lineClamp, dataLegivel, adicionarEventoAgenda } from '../../utils';
 
 const props = defineProps<{
   evento: Evento;
@@ -29,20 +28,6 @@ const descricao = computed<string>(() => {
 const rota = computed<string>(() => {
   return `/eventos/${props.evento.getId()}`;
 });
-
-const linkCalendario = computed(() => {
-  const dataEvento = dayjs(props.evento.getData());
-  const inicio = dataEvento.toISOString().replace(/-|:|\./g, '');
-
-  const fim = dataEvento
-    .add(1, 'h')
-    .toISOString()
-    .replace(/-|:|\./g, '');
-
-  const local = 'Centro+De+Comunicação,+Turismo+e+Artes+-+CCTA/UFPB';
-
-  return `https://www.google.com/calendar/render?action=TEMPLATE&text=${titulo.value}&dates=${inicio}/${fim}&details=${descricao.value}&location=${local}&sf=true&output=xml`;
-});
 </script>
 
 <template>
@@ -50,19 +35,20 @@ const linkCalendario = computed(() => {
     <q-card-section class="q-pt-xs">
       <div class="text-overline">{{ data }}</div>
       <div class="text-h5 q-mt-sm q-mb-xs">{{ titulo }}</div>
-      <div v-html="lineClamp(descricao)" class="text-caption text-grey"></div>
+      <div class="text-caption text-grey">{{ lineClamp(descricao) }}</div>
     </q-card-section>
 
     <q-separator />
 
     <q-card-actions>
       <q-btn
-        :href="linkCalendario"
+        :href="adicionarEventoAgenda(evento)"
         target="_blank"
         flat
         round
         icon="o_insert_invitation"
       >
+        <q-tooltip> Adicionar ao Google Agenda </q-tooltip>
         {{ hora }}
       </q-btn>
       <q-space></q-space>
