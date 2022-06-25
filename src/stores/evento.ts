@@ -3,6 +3,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  limit,
   orderBy,
   query,
   where,
@@ -37,17 +38,33 @@ export const useEventoStore = defineStore('evento', () => {
     }
   }
 
-  async function getEventos(): Promise<Evento[]> {
-    const primeiroDiaDoMes = dayjs().startOf('M');
-    const ultimoDiaDoMes = dayjs().endOf('M');
-    const docSnap = await getDocs(
-      query(
-        collection(db, 'eventos'),
-        where('data', '>=', primeiroDiaDoMes),
-        where('data', '<=', ultimoDiaDoMes),
-        orderBy('data')
-      )
-    );
+  async function getEventos(
+    totalItens: number | null = null
+  ): Promise<Evento[]> {
+    const primeiroDiaDoMes = dayjs().startOf('M').toDate();
+    const ultimoDiaDoMes = dayjs().endOf('M').toDate();
+
+    let docSnap;
+    if (totalItens !== null) {
+      docSnap = await getDocs(
+        query(
+          collection(db, 'eventos'),
+          where('data', '>=', primeiroDiaDoMes),
+          where('data', '<=', ultimoDiaDoMes),
+          orderBy('data'),
+          limit(totalItens)
+        )
+      );
+    } else {
+      docSnap = await getDocs(
+        query(
+          collection(db, 'eventos'),
+          where('data', '>=', primeiroDiaDoMes),
+          where('data', '<=', ultimoDiaDoMes),
+          orderBy('data')
+        )
+      );
+    }
 
     const eventos: Evento[] = [];
     for (const doc of docSnap.docs) {
