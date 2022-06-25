@@ -3,6 +3,20 @@ import ListaSitesExternos from 'src/components/home/ListaSitesExternos.vue';
 import ListaMenuItens from 'src/components/home/ListaMenuItens.vue';
 import ListaNoticias from 'src/components/home/ListaNoticias.vue';
 import ListaEventos from 'src/components/home/ListaEventos.vue';
+import { useCentroStore } from 'stores/centro';
+import { onMounted, ref } from '@vue/runtime-core';
+
+const centroStore = useCentroStore();
+const descricao = ref<string>('');
+
+onMounted(async () => {
+  try {
+    await centroStore.getDescricao();
+    descricao.value = centroStore.descricao;
+  } catch (e) {
+    descricao.value = 'Aqui você encontra todas as notícias do CCTA!';
+  }
+});
 </script>
 
 <template>
@@ -15,10 +29,7 @@ import ListaEventos from 'src/components/home/ListaEventos.vue';
           Seja bem-vindo ao Portal CCTA&hellip;
         </p>
         <p>
-          Oh yeah. It's the best part. It's crunchy, it's explosive, it's where
-          the muffin breaks free of the pan and sort of does it's own thing.
-          I'll tell you. That's a million dollor idea right there. Just sell the
-          tops.
+          {{ descricao }}
         </p>
 
         <div class="row flex-center q-gutter-sm q-mt-sm">
