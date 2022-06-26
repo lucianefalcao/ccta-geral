@@ -8,17 +8,16 @@ import {
   query,
   limitToLast,
   orderByChild,
+  onChildAdded,
 } from 'firebase/database';
-import { computed, onMounted, ref } from '@vue/runtime-core';
+import { computed, onMounted, ref, nextTick } from '@vue/runtime-core';
 import { database } from 'src/boot/firebase';
 import dayjs from 'dayjs';
-import { useQuasar } from 'quasar';
+import { QCardSection, useQuasar } from 'quasar';
 import Chat from 'src/models/domain/chat/chat';
 import Membro, { MembroTipo } from 'src/models/domain/chat/membro';
 import Mensagem from 'src/models/domain/chat/mensagem';
 import ErroBanner from '../../components/ErroBanner.vue';
-import { VueElement } from '@vue/runtime-dom';
-import AppVue from 'src/App.vue';
 
 const $q = useQuasar();
 
@@ -28,6 +27,7 @@ const prompt = ref<boolean>(true);
 const membros = ref<Membro[]>([]);
 const mensagens = ref<Mensagem[]>([]);
 const chat = ref<Chat>();
+const atendimento = ref<QCardSection>();
 
 const mensagem = ref<string>('');
 const carregando = ref<boolean>(false);
@@ -85,28 +85,23 @@ const buscarMembros = async (chatId: string) => {
   });
 };
 
-const buscarMensagens = async (chatId: string) => {
+const escutarNovasMensagens = async (chatId: string) => {
   const mensagensRef = refDatabase(database, 'mensagens/' + chatId);
   const queryRef = query(
     mensagensRef,
     ...[orderByChild('timestamp'), limitToLast(50)]
   );
-  onValue(queryRef, async (snapshot) => {
-    if (snapshot.exists()) {
-      let ms = [];
-      snapshot.forEach((snap) => {
-        ms.push(
-          new Mensagem(
-            snap.key,
-            snap.val().membro,
-            snap.val().mensagem,
-            new Date(snap.val().timestamp),
-            snapshot.key
-          )
-        );
-      });
-      mensagens.value = ms;
-    }
+  onChildAdded(queryRef, (data) => {
+    mensagens.value.push(
+      new Mensagem(
+        data.key,
+        data.val().membro,
+        data.val().mensagem,
+        new Date(data.val().timestamp),
+        chatId
+      )
+    );
+    scrollToEnd();
   });
 };
 
@@ -117,6 +112,7 @@ const enviarMensagem = async () => {
     membro: nome.value,
     timestamp: new Date().getTime(),
   });
+  mensagem.value = '';
 };
 
 const salvarNome = async () => {
@@ -148,12 +144,11 @@ const salvarNome = async () => {
 };
 
 const scrollToEnd = (): void => {
-  // this.$nextTick(() => {
-  //   const container = this.$el.querySelector('.chat-container') as HTMLElement;
-  //   if (container) {
-  //     container.scrollTop = container.scrollHeight;
-  //   }
-  // });
+  nextTick(() => {
+    if (atendimento.value) {
+      atendimento.value.$el.scrollTop = atendimento.value.$el.scrollHeight;
+    }
+  });
 };
 
 onMounted(async () => {
@@ -183,8 +178,7 @@ onMounted(async () => {
       }
 
       await buscarMembros(doc.key);
-      await buscarMensagens(doc.key);
-      scrollToEnd();
+      escutarNovasMensagens(doc.key);
     }
   } catch (e) {
     erroMensagem.value =
@@ -202,7 +196,7 @@ onMounted(async () => {
       <q-spinner-hourglass v-if="carregando" color="primary" size="2em" />
 
       <q-card v-else flat style="width: 100%; max-width: 600px">
-        <q-card-section ref="container-mensagens" class="chat-container">
+        <q-card-section ref="atendimento" class="chat-container q-px-sm">
           <div
             v-for="mensagem in mensagens"
             :key="mensagem.getId()"
