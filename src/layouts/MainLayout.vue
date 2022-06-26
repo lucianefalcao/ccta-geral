@@ -6,6 +6,24 @@ import EssentialLink from 'components/EssentialLink.vue';
 const $q = useQuasar();
 const linksEssenciais = [
   {
+    title: 'Notícias',
+    caption: 'Confira as novidades do centro',
+    icon: 'o_newspaper',
+    link: '/noticias',
+  },
+  {
+    title: 'Eventos',
+    caption: 'Veja os eventos do mês',
+    icon: 'o_event',
+    link: '/eventos',
+  },
+  {
+    title: 'Editais',
+    caption: 'Confira as oportunidades do centro',
+    icon: 'o_campaign',
+    link: '/editais',
+  },
+  {
     title: 'Atendimento',
     caption: 'Tire suas dúvidas',
     icon: 'o_chat',
@@ -47,10 +65,12 @@ onMounted(() => {
         />
 
         <q-toolbar-title class="q-pa-lg">
-          <a href="/">
+          <a href="/" class="text-primary text-weight-bold">
             <q-avatar>
               <img src="../assets/logo.svg" alt="Logo" />
             </q-avatar>
+
+            CCTA
           </a>
         </q-toolbar-title>
       </q-toolbar>
