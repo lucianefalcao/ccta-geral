@@ -196,7 +196,7 @@ onMounted(async () => {
       <q-spinner-hourglass v-if="carregando" color="primary" size="2em" />
 
       <q-card v-else flat style="width: 100%; max-width: 600px">
-        <q-card-section ref="atendimento" class="chat-container q-px-sm">
+        <q-card-section ref="atendimento" class="chat-container light">
           <div
             v-for="mensagem in mensagens"
             :key="mensagem.getId()"
@@ -206,7 +206,9 @@ onMounted(async () => {
             "
           >
             <q-chat-message
-              :name="mensagem.getMembro()"
+              :name="
+                mensagem.getMembro() === nome ? 'Você' : mensagem.getMembro()
+              "
               :sent="mensagem.getMembro() === nome"
               :text="[mensagem.getTexto()]"
               :bg-color="
@@ -215,12 +217,12 @@ onMounted(async () => {
               text-color="white"
             ></q-chat-message>
           </div>
-          <div class="row justify-center q-mt-lg" v-if="!atendente">
-            Aguardando atendente&hellip;
-          </div>
         </q-card-section>
 
-        <q-card-section class="q-px-none">
+        <q-card-section class="q-pl-sm q-pr-none">
+          <div class="row justify-center q-my-sm" v-if="!atendente">
+            Aguardando atendente&hellip;
+          </div>
           <div class="row items-center">
             <div class="col-10">
               <q-input
@@ -284,11 +286,11 @@ onMounted(async () => {
   box-sizing: border-box;
   height: calc(80vh - 7rem);
   overflow-y: auto;
-  padding: 10px;
+  padding: 20px;
 }
 
 .light::-webkit-scrollbar {
-  width: 15px;
+  width: 5px;
 }
 
 .light::-webkit-scrollbar-track {
@@ -304,5 +306,15 @@ onMounted(async () => {
 
 .light::-webkit-scrollbar-thumb:hover {
   background: black;
+}
+
+@media screen and (max-width: 500px) {
+  .chat-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chat-container {
+    scrollbar-width: none;
+  }
 }
 </style>
