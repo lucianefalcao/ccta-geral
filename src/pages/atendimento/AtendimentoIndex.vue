@@ -9,6 +9,8 @@ import {
   limitToLast,
   orderByChild,
   onChildAdded,
+  set,
+  update,
 } from 'firebase/database';
 import { computed, onMounted, ref, nextTick } from '@vue/runtime-core';
 import { database } from 'src/boot/firebase';
@@ -44,11 +46,11 @@ const atendente = computed(() => {
   const atendentes = membros.value.filter(
     (m) => m.getTipo() === MembroTipo.ATENDENTE
   );
-  if (atendentes.length > 0) {
-    return true;
+  if (atendentes.length > 0 && atendentes.length === 1) {
+    return atendentes[0];
   }
 
-  return false;
+  return null;
 });
 
 const regraNome = [
@@ -60,34 +62,32 @@ const podeEnviar = computed(() =>
   regraNome.every((regra) => regra(nome.value) === true)
 );
 
-const buscarMembros = async (chatId: string) => {
+const buscarMembros = (chatId: string) => {
   const membrosRef = refDatabase(database, 'membros/' + chatId);
-  onValue(membrosRef, async (snapshot) => {
+  onValue(membrosRef, (snapshot) => {
+    let mbs = [];
     if (snapshot.exists()) {
-      let mbs = [];
-      membros.value = mbs;
+      mbs.push(
+        new Membro(
+          snapshot.val().visitante.id,
+          snapshot.val().visitante.nome,
+          MembroTipo.VISITANTE,
+          snapshot.key
+        )
+      );
 
-      snapshot.forEach((snap) => {
+      if (snapshot.val().atendente) {
         mbs.push(
           new Membro(
-            snap.val().visitante,
-            snap.val().visitante,
-            MembroTipo.VISITANTE,
+            snapshot.val().atendente.id,
+            snapshot.val().atendente.nome,
+            MembroTipo.ATENDENTE,
             snapshot.key
           )
         );
+      }
 
-        if (snap.val().atendente) {
-          membros.value.push(
-            new Membro(
-              snap.val().atendente.id,
-              snap.val().atendente.nome,
-              MembroTipo.ATENDENTE,
-              snapshot.key
-            )
-          );
-        }
-      });
+      membros.value = mbs;
     }
   });
 };
@@ -123,6 +123,11 @@ const enviarMensagem = async () => {
       membro: nome.value,
       timestamp: new Date().getTime(),
     });
+
+    await update(refDatabase(database, 'chats/' + chat.value?.getId()), {
+      ultimaMensagem: mensagem.value,
+      timestamp: new Date().getTime(),
+    });
     mensagem.value = '';
   }
 };
@@ -138,12 +143,16 @@ const salvarNome = async () => {
 
     chat.value = new Chat(novoChat.key, 'chat iniciado', new Date());
 
-    const membrosRef = refDatabase(database, 'membros/' + novoChat.key);
-    await push(membrosRef, {
-      visitante: nome.value,
+    const membrosRef = refDatabase(
+      database,
+      'membros/' + novoChat.key + '/visitante'
+    );
+    await set(membrosRef, {
+      id: nome.value,
+      nome: nome.value,
     });
 
-    await buscarMembros(novoChat.key);
+    buscarMembros(novoChat.key);
     await escutarNovasMensagens(novoChat.key);
 
     $q.localStorage.set('chatIdentificacao', novoChat.key);
@@ -198,7 +207,7 @@ onMounted(async () => {
         return;
       }
 
-      await buscarMembros(doc.key);
+      buscarMembros(doc.key);
       escutarNovasMensagens(doc.key);
     }
   } catch (e) {
@@ -233,7 +242,9 @@ onMounted(async () => {
           >
             <q-chat-message
               :name="
-                mensagem.getMembro() === nome ? 'Você' : mensagem.getMembro()
+                mensagem.getMembro() === nome
+                  ? 'Você'
+                  : atendente?.getNome() ?? 'Não identificado'
               "
               :sent="mensagem.getMembro() === nome"
               :text="[mensagem.getTexto()]"
