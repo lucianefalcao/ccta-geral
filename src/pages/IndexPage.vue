@@ -38,7 +38,10 @@ onMounted(async () => {
       </div>
 
       <div class="q-mt-lg q-mt-md-none col-md-6">
-        <q-img src="https://via.placeholder.com/1200x600" alt="Imagem" />
+        <q-img
+          src="../assets/undraw_graduation_re_gthn.svg"
+          alt="Imagem principal do site"
+        ></q-img>
       </div>
     </section>
 
