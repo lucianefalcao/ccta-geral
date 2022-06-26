@@ -44,3 +44,4 @@ firestore.rules
 firestore.indexes.json
 database.rules.json
 storage.rules
+firebase-data
