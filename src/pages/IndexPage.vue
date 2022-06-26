@@ -10,6 +10,8 @@ const centroStore = useCentroStore();
 const descricao = ref<string>('');
 const carregando = ref<boolean>(false);
 
+const googleMapApi = process.env.API_KEY_MAPS;
+
 onMounted(async () => {
   try {
     carregando.value = true;
@@ -101,6 +103,19 @@ onMounted(async () => {
       <div class="row flex-center q-gutter-md q-mt-sm q-pt-md-lg">
         <ListaEventos />
       </div>
+    </section>
+
+    <section class="row flex-center q-my-lg">
+      <iframe
+        width="100%"
+        height="250"
+        frameborder="0"
+        style="border: 0"
+        referrerpolicy="no-referrer-when-downgrade"
+        :src="`https://www.google.com/maps/embed/v1/place?key=${googleMapApi}&q=Centro+De+Comunicação,+Turismo+e+Artes+-+CCTA/UFPB`"
+        allowfullscreen
+      >
+      </iframe>
     </section>
   </q-page>
 </template>

@@ -57,8 +57,6 @@ export const useCursoStore = defineStore('curso', () => {
 
     ultimaConsulta.value = docSnap.docs[docSnap.docs.length - 1];
 
-    console.log('aqui3');
-
     const cursos: Curso[] = [];
     for (const doc of docSnap.docs) {
       cursos.push(
