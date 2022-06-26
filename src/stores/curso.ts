@@ -16,7 +16,7 @@ import { db } from 'src/boot/firebase';
 export const useCursoStore = defineStore('curso', () => {
   const cursoSelecionado = ref<Curso>();
 
-  const ultimaConsulta = ref({});
+  const ultimaConsulta = ref();
 
   async function getCurso(uid: string) {
     if (!cursoSelecionado.value) {

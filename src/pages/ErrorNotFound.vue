@@ -22,8 +22,4 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { useQuasar } from 'quasar';
-
-const $q = useQuasar();
-</script>
+<script setup lang="ts"></script>

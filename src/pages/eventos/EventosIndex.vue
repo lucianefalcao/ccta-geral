@@ -35,7 +35,7 @@ onMounted(async () => {
         <q-breadcrumbs-el label="Início" icon="o_home" to="/" />
       </q-breadcrumbs>
       <p v-if="$q.screen.gt.sm" class="text-h4 q-mt-lg">Próximos Eventos</p>
-      <p v-else class="text-h6 q-mt-lg">Eventos do mês de Junho</p>
+      <p v-else class="text-h6 q-mt-lg">Próximos Eventos</p>
       <q-list class="column q-mb-sm q-mt-lg">
         <q-item v-for="evento in eventos" :key="evento.getId()">
           <CardEvento :evento="evento"></CardEvento>
