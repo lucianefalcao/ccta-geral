@@ -11,6 +11,7 @@ import {
   onChildAdded,
   set,
   update,
+  onChildRemoved,
 } from 'firebase/database';
 import { computed, onMounted, ref, nextTick } from '@vue/runtime-core';
 import { database } from 'src/boot/firebase';
@@ -112,6 +113,18 @@ const escutarNovasMensagens = async (chatId: string) => {
   });
 };
 
+const escutarChat = () => {
+  onChildRemoved(refDatabase(database, 'chats/' + chat.value.getId()), () => {
+    $q.notify({
+      type: 'info',
+      message: 'O seu atendimento foi encerrado.',
+      timeout: 3000,
+      position: 'top',
+    });
+    $router.push('/');
+  });
+};
+
 const enviarMensagem = async () => {
   if (mensagem.value.length > 0) {
     const mensagemRef = refDatabase(
@@ -154,6 +167,7 @@ const salvarNome = async () => {
 
     buscarMembros(novoChat.key);
     await escutarNovasMensagens(novoChat.key);
+    escutarChat();
 
     $q.localStorage.set('chatIdentificacao', novoChat.key);
     $q.localStorage.set('nomeAtendimento', nome.value);
@@ -209,6 +223,7 @@ onMounted(async () => {
 
       buscarMembros(doc.key);
       escutarNovasMensagens(doc.key);
+      escutarChat();
     }
   } catch (e) {
     erroMensagem.value =
