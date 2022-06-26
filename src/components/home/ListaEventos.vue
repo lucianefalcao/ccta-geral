@@ -15,8 +15,8 @@ onMounted(async () => {
   try {
     mensagemErro.value = '';
     carregando.value = true;
-    eventos.value = await eventoStore.getEventos();
-  } catch (e: any) {
+    eventos.value = await eventoStore.getEventos(3);
+  } catch (e) {
     mensagemErro.value =
       'Ocorreu um erro ao buscar as notícias, por favor atualize a página.';
   } finally {
@@ -35,7 +35,7 @@ onMounted(async () => {
     class="q-ma-md"
   />
   <div v-if="!carregando && !mensagemErro && eventos.length === 0">
-    <p>Nenhuma notícia cadastrada</p>
+    <p>Nenhuma evento para os próximos dias</p>
   </div>
   <CardEvento
     v-for="evento in eventos"

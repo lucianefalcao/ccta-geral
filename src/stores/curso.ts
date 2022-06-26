@@ -39,16 +39,25 @@ export const useCursoStore = defineStore('curso', () => {
   }
 
   async function getCursosPaginacao() {
-    const docSnap = await getDocs(
-      query(
-        collection(db, 'cursos'),
-        orderBy('nome', 'desc'),
-        startAfter(ultimaConsulta.value || {}),
-        limit(10)
-      )
-    );
+    let docSnap;
+    if (!ultimaConsulta.value) {
+      docSnap = await getDocs(
+        query(collection(db, 'cursos'), orderBy('nome'), limit(10))
+      );
+    } else {
+      docSnap = await getDocs(
+        query(
+          collection(db, 'cursos'),
+          orderBy('nome'),
+          startAfter(ultimaConsulta.value),
+          limit(10)
+        )
+      );
+    }
 
     ultimaConsulta.value = docSnap.docs[docSnap.docs.length - 1];
+
+    console.log('aqui3');
 
     const cursos: Curso[] = [];
     for (const doc of docSnap.docs) {

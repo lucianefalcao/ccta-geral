@@ -12,7 +12,6 @@ import { db } from '../boot/firebase';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import Evento from 'src/models/domain/eventos/evento';
-import dayjs from 'dayjs';
 
 export const useEventoStore = defineStore('evento', () => {
   const eventoSelecionado = ref<Evento>();
@@ -44,7 +43,7 @@ export const useEventoStore = defineStore('evento', () => {
     const docSnap = await getDocs(
       query(
         collection(db, 'eventos'),
-        where('data', '>=', dayjs().toDate()),
+        where('data', '>=', new Date()),
         orderBy('data'),
         limit(totalItens)
       )

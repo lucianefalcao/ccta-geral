@@ -8,19 +8,30 @@ import { onMounted, ref } from '@vue/runtime-core';
 
 const centroStore = useCentroStore();
 const descricao = ref<string>('');
+const carregando = ref<boolean>(false);
 
 onMounted(async () => {
   try {
+    carregando.value = true;
     await centroStore.getDescricao();
     descricao.value = centroStore.descricao;
   } catch (e) {
     descricao.value = 'Aqui você encontra todas as notícias do CCTA!';
+  } finally {
+    carregando.value = false;
   }
 });
 </script>
 
 <template>
-  <q-page>
+  <q-circular-progress
+    v-if="carregando"
+    indeterminate
+    size="sm"
+    color="primary"
+    class="q-ma-md"
+  />
+  <q-page v-else>
     <section
       class="q-mx-lg q-mt-xl q-mx-md-xl row-md justify-between q-gutter-sm"
     >

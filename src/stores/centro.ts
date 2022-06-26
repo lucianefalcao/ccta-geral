@@ -11,7 +11,7 @@ export const useCentroStore = defineStore('centro', () => {
       const docSnapshot = await getDocs(query(collection(db, 'centro')));
 
       if (!docSnapshot.empty) {
-        descricao.value = docSnapshot.docs[0].data().descricao;
+        descricao.value = docSnapshot.docs[0].data().sobre;
       }
     }
   }

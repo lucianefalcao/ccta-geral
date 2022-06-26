@@ -20,11 +20,13 @@ import Chat from 'src/models/domain/chat/chat';
 import Membro, { MembroTipo } from 'src/models/domain/chat/membro';
 import Mensagem from 'src/models/domain/chat/mensagem';
 import ErroBanner from '../../components/ErroBanner.vue';
+import { useRouter } from 'vue-router';
 
 dayjs.extend(relativeTime);
 dayjs.locale('pt-br');
 
 const $q = useQuasar();
+const $router = useRouter();
 
 const nome = ref<string>('');
 const prompt = ref<boolean>(true);
@@ -111,13 +113,18 @@ const escutarNovasMensagens = async (chatId: string) => {
 };
 
 const enviarMensagem = async () => {
-  const mensagemRef = refDatabase(database, 'mensagens/' + chat.value?.getId());
-  await push(mensagemRef, {
-    mensagem: mensagem.value,
-    membro: nome.value,
-    timestamp: new Date().getTime(),
-  });
-  mensagem.value = '';
+  if (mensagem.value.length > 0) {
+    const mensagemRef = refDatabase(
+      database,
+      'mensagens/' + chat.value?.getId()
+    );
+    await push(mensagemRef, {
+      mensagem: mensagem.value,
+      membro: nome.value,
+      timestamp: new Date().getTime(),
+    });
+    mensagem.value = '';
+  }
 };
 
 const salvarNome = async () => {
@@ -137,6 +144,7 @@ const salvarNome = async () => {
     });
 
     await buscarMembros(novoChat.key);
+    await escutarNovasMensagens(novoChat.key);
 
     $q.localStorage.set('chatIdentificacao', novoChat.key);
     $q.localStorage.set('nomeAtendimento', nome.value);
@@ -158,6 +166,10 @@ const scrollToEnd = (): void => {
 
 const tempo = (mensagem: Mensagem) => {
   return dayjs(mensagem.getData()).fromNow();
+};
+
+const sair = () => {
+  $router.back();
 };
 
 onMounted(async () => {
@@ -235,7 +247,10 @@ onMounted(async () => {
         </q-card-section>
 
         <q-card-section class="q-pl-sm q-pr-none">
-          <div class="row justify-center q-my-sm" v-if="!atendente">
+          <div
+            class="row justify-center q-my-sm"
+            v-if="!atendente && mensagens.length > 0"
+          >
             Aguardando atendente&hellip;
           </div>
           <div class="row items-center">
@@ -278,7 +293,13 @@ onMounted(async () => {
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn class="text-secondary" flat label="Cancelar" v-close-popup />
+        <q-btn
+          class="text-secondary"
+          flat
+          label="Cancelar"
+          v-close-popup
+          @click="sair"
+        />
         <q-btn
           :disabled="!podeEnviar"
           flat
