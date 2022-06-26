@@ -196,6 +196,11 @@ onMounted(async () => {
       <q-spinner-hourglass v-if="carregando" color="primary" size="2em" />
 
       <q-card v-else flat style="width: 100%; max-width: 600px">
+        <div class="justify-center bg-primary text-center q-pa-sm">
+          <p class="text-weight-medium text-white q-mb-none">
+            Atendimento CCTA
+          </p>
+        </div>
         <q-card-section ref="atendimento" class="chat-container light">
           <div
             v-for="mensagem in mensagens"
@@ -224,7 +229,7 @@ onMounted(async () => {
             Aguardando atendente&hellip;
           </div>
           <div class="row items-center">
-            <div class="col-10">
+            <div class="col-10 col-md-11">
               <q-input
                 label="Envie uma mensagem"
                 v-model.trim="mensagem"
@@ -232,7 +237,7 @@ onMounted(async () => {
                 @keyup.enter="enviarMensagem"
               ></q-input>
             </div>
-            <div class="col-2">
+            <div class="col-2 col-md-1">
               <q-btn
                 icon="o_send"
                 flat
