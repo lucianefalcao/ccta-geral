@@ -13,11 +13,16 @@ import {
 import { computed, onMounted, ref, nextTick } from '@vue/runtime-core';
 import { database } from 'src/boot/firebase';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/pt-br';
 import { QCardSection, useQuasar } from 'quasar';
 import Chat from 'src/models/domain/chat/chat';
 import Membro, { MembroTipo } from 'src/models/domain/chat/membro';
 import Mensagem from 'src/models/domain/chat/mensagem';
 import ErroBanner from '../../components/ErroBanner.vue';
+
+dayjs.extend(relativeTime);
+dayjs.locale('pt-br');
 
 const $q = useQuasar();
 
@@ -151,6 +156,10 @@ const scrollToEnd = (): void => {
   });
 };
 
+const tempo = (mensagem: Mensagem) => {
+  return dayjs(mensagem.getData()).fromNow();
+};
+
 onMounted(async () => {
   try {
     carregando.value = true;
@@ -219,6 +228,7 @@ onMounted(async () => {
               :bg-color="
                 mensagem.getMembro() === nome ? 'primary' : 'secondary'
               "
+              :stamp="tempo(mensagem)"
               text-color="white"
             ></q-chat-message>
           </div>
