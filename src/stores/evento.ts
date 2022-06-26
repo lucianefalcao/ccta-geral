@@ -41,30 +41,14 @@ export const useEventoStore = defineStore('evento', () => {
   async function getEventos(
     totalItens: number | null = null
   ): Promise<Evento[]> {
-    const primeiroDiaDoMes = dayjs().startOf('M').toDate();
-    const ultimoDiaDoMes = dayjs().endOf('M').toDate();
-
-    let docSnap;
-    if (totalItens !== null) {
-      docSnap = await getDocs(
-        query(
-          collection(db, 'eventos'),
-          where('data', '>=', primeiroDiaDoMes),
-          where('data', '<=', ultimoDiaDoMes),
-          orderBy('data'),
-          limit(totalItens)
-        )
-      );
-    } else {
-      docSnap = await getDocs(
-        query(
-          collection(db, 'eventos'),
-          where('data', '>=', primeiroDiaDoMes),
-          where('data', '<=', ultimoDiaDoMes),
-          orderBy('data')
-        )
-      );
-    }
+    const docSnap = await getDocs(
+      query(
+        collection(db, 'eventos'),
+        where('data', '>=', dayjs().toDate()),
+        orderBy('data'),
+        limit(totalItens)
+      )
+    );
 
     const eventos: Evento[] = [];
     for (const doc of docSnap.docs) {
