@@ -3,9 +3,11 @@
     class="fullscreen bg-primary text-white text-center q-pa-md flex flex-center"
   >
     <div>
-      <div style="font-size: 30vh">404</div>
+      <div style="font-size: 30vh" class="gt-sm">404</div>
+      <div style="font-size: 20vh">404</div>
 
-      <div class="text-h2" style="opacity: 0.4">Oops. Nada aqui...</div>
+      <div class="text-h2 gt-sm" style="opacity: 0.4">Oops. Nada aqui...</div>
+      <div class="text-h5" style="opacity: 0.4">Oops. Nada aqui...</div>
 
       <q-btn
         class="q-mt-xl"
@@ -20,10 +22,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { useQuasar } from 'quasar';
 
-export default defineComponent({
-  name: 'ErrorNotFound',
-});
+const $q = useQuasar();
 </script>
