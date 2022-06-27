@@ -195,6 +195,15 @@ const sair = () => {
   $router.back();
 };
 
+const pressionarEnter = () => {
+  if (nome.value.length === 0) {
+    sair();
+    return;
+  }
+
+  salvarNome();
+};
+
 onMounted(async () => {
   try {
     carregando.value = true;
@@ -314,7 +323,7 @@ onMounted(async () => {
           dense
           v-model.trim="nome"
           autofocus
-          @keyup.enter="prompt = false"
+          @keyup.enter="pressionarEnter"
         />
       </q-card-section>
 
